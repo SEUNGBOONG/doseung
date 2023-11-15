@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, useNavigate } from 'react-router-dom';
-
+import React, { useState } from 'react';
 import './App.css';
 import HomeImage from './home.png';
 import TodayImage from './today.png';
@@ -9,14 +7,14 @@ import RingImage from './ring.png';
 import ComImage from './com.png';
 
 function App() {
-  const [message, setMessage] = useState([]);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    fetch("/hello")
-      .then((res) => res.json())
-      .then((data) => setMessage(data));
-  }, []);
+  const containerStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: '100vh',
+    flexGrow: 1,
+  };
 
   const contentWrapperStyle = {
     display: 'flex',
@@ -91,55 +89,68 @@ function App() {
   const appBackgroundStyle = {
     width: '90%',
     height: 'auto',
-    background: 'transparent',
-    border: '1px solid grey',
+    background: 'white',
+    border: '1px solid #ddd',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     padding: '20px',
     borderRadius: '10px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     zIndex: '0',
     position: 'relative',
     margin: '10px',
   };
 
+  const likeButtonStyle = {
+    cursor: 'pointer',
+    color: 'gray',
+    alignSelf: 'flex-start',
+    marginTop: '10px',
+  };
+
+  const writeButtonStyle = {
+    cursor: 'pointer',
+    color: 'blue',
+    alignSelf: 'flex-start',
+    marginTop: '10px',
+  };
+
+  const [likes, setLikes] = useState(Array(8).fill(false));
+
+  const handleLikeClick = (index) => {
+    const updatedLikes = [...likes];
+    updatedLikes[index] = !updatedLikes[index];
+    setLikes(updatedLikes);
+  };
+
+  const handleWriteButtonClick = () => {
+    window.location.href = './write.js'; // 이동할 페이지 경로에 맞게 수정
+  };
   const handleHomeImageClick = () => {
-    navigate('/App.js');
+    window.location.href = './App.js';
   };
 
   const handleTodayImageClick = () => {
-    navigate('/App.js');
+    window.location.href = './App.js';
   };
 
   const handleCHImageClick = () => {
-    navigate('/ch');
+    window.location.href = './ch.js';
   };
 
   const handleRingImageClick = () => {
-    navigate('/ring');
+    window.location.href = './ring.js';
   };
 
   const handleComImageClick = () => {
-    navigate('/com');
+    window.location.href = './com.js';
   };
 
+
   return (
-    <div className="App">
-      <ul>
-        {Array.isArray(message) ? (
-          message.map((v, idx) => <li key={`${idx}-${v}`}>{v}</li>)
-        ) : (
-          <li></li>
-        )}
-      </ul>
-
-      <Router>
-        <div>
-          {/* Routes and Route removed since they are not used */}
-        </div>
-      </Router>
-
+    <div className="App" style={containerStyle}>
       <div style={contentWrapperStyle}>
         <div style={centerWhiteStyle}>
           <div style={homeWrapperStyle}>
@@ -149,18 +160,21 @@ function App() {
               style={{ ...homeImageStyle }}
               onClick={handleHomeImageClick}
             />
-            <span style={homeTextStyle}>오늘의 소식</span>
+            <span style={homeTextStyle}>커뮤니티</span>
           </div>
 
           <div style={{ justifyContent: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div style={appBackgroundStyle}><p>내용 1</p></div>
-            <div style={appBackgroundStyle}><p>내용 2</p></div>
-            <div style={appBackgroundStyle}><p>내용 3</p></div>
-            <div style={appBackgroundStyle}><p>내용 4</p></div>
-            <div style={appBackgroundStyle}><p>내용 5</p></div>
-            <div style={appBackgroundStyle}><p>내용 6</p></div>
-            <div style={appBackgroundStyle}><p>내용 7</p></div>
-            <div style={appBackgroundStyle}><p>내용 8</p></div>
+            {[...Array(8)].map((_, index) => (
+              <div key={index} style={appBackgroundStyle}>
+                <p style={{ textAlign: 'left' }}>내용 {index + 1}</p>
+                <span
+                  style={likeButtonStyle}
+                  onClick={() => handleLikeClick(index)}
+                >
+                  {likes[index] ? '❤️ 좋아요 취소' : '🤍 좋아요'}
+                  </span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
